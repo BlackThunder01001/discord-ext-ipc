@@ -52,6 +52,7 @@ class Client:
         """
         log.info("Initiating WebSocket connection.")
         print("Initiating WebSocket connection.")
+        print(f"[IPC]: {self.host} @ port {self.port} with key {self.secret_key} and url {self.url}")
         self.session = aiohttp.ClientSession()
 
         if not self.port:

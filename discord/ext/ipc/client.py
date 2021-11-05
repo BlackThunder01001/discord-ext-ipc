@@ -102,6 +102,9 @@ class Client:
         if not self.session:
             print("Session not inited.")
             await self.init_sock()
+        if not self.websocket:
+            print("WS not inited.")
+            await self.init_sock()
 
         payload = {
             "endpoint": endpoint,

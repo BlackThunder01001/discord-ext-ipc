@@ -259,13 +259,14 @@ class Server:
 
     async def start(self):
         """Starts the IPC server."""
-        await self.bot.dispatch("ipc_ready")
+        #await self.bot.dispatch("ipc_ready")
 
         self._server = aiohttp.web.Application()
         self._server.router.add_route("GET", "/", self.handle_accept)
         print(self._server)
         print(self._server.__dict__)
         print(f"[IPC]: {self.host} @ {self.port}")
+        print("IPC ready ho gayi :weirdguy:")
         if self.do_multicast:
             self._multicast_server = aiohttp.web.Application()
             self._multicast_server.router.add_route("GET", "/", self.handle_multicast)

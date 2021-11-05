@@ -257,7 +257,7 @@ class Server:
         site = aiohttp.web.TCPSite(runner, self.host, port)
         await site.start()
 
-    def start(self):
+    async def start(self):
         """Starts the IPC server."""
         await self.bot.dispatch("ipc_ready")
 

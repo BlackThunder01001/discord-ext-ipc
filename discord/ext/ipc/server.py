@@ -134,6 +134,7 @@ class Server:
         self.update_endpoints()
 
         log.info("Initiating IPC Server.")
+        print("Initiating IPC Server.")
 
         websocket = aiohttp.web.WebSocketResponse()
         await websocket.prepare(request)
@@ -142,17 +143,19 @@ class Server:
             request = message.json()
 
             log.debug("IPC Server < %r", request)
-
+            print("IPC Server <", request)
             endpoint = request.get("endpoint")
 
             headers = request.get("headers")
 
             if not headers or headers.get("Authorization") != self.secret_key:
-                log.info("Received unauthorized request (Invalid or no token provided).")
+                log.info("Received unauthorized request (Invalid or no token provided)."
+                print("Received unauthorized request (Invalid or no token provided).")
                 response = {"error": "Invalid or no token provided.", "code": 403}
             else:
                 if not endpoint or endpoint not in self.endpoints:
                     log.info("Received invalid request (Invalid or no endpoint given).")
+                    print("Received invalid request (Invalid or no endpoint given).")
                     response = {"error": "Invalid or no endpoint given.", "code": 400}
                 else:
                     server_response = IpcServerResponse(request)
@@ -178,6 +181,11 @@ class Server:
                             endpoint,
                             request,
                         )
+                        print(
+                            "Received error while executing %r with %r",
+                            endpoint,
+                            request,
+                        )
                         self.bot.dispatch("ipc_error", endpoint, error)
 
                         response = {
@@ -190,6 +198,7 @@ class Server:
             try:
                 await websocket.send_json(response)
                 log.debug("IPC Server > %r", response)
+                print("IPC Server > ", response)
             except TypeError as error:
                 if str(error).startswith("Object of type") and str(error).endswith(
                     "is not JSON serializable"
@@ -254,7 +263,9 @@ class Server:
 
         self._server = aiohttp.web.Application()
         self._server.router.add_route("GET", "/", self.handle_accept)
-
+        print(self._server)
+        print(self._server.__dict__)
+        print(f"[IPC]: {self.host} @ {self.port}")
         if self.do_multicast:
             self._multicast_server = aiohttp.web.Application()
             self._multicast_server.router.add_route("GET", "/", self.handle_multicast)

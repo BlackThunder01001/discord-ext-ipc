@@ -2,7 +2,7 @@ import logging
 
 import aiohttp.web
 from discord.ext.ipc.errors import *
-
+import asyncio
 log = logging.getLogger(__name__)
 
 

@@ -25,7 +25,7 @@ class Client:
     def __init__(self, host="localhost", port=None, multicast_port=20000, secret_key=None):
         """Constructor"""
         self.loop = asyncio.get_event_loop()
-
+        print(f"[IPC]: {host} @ port {port} with key {secret_key}")
         self.secret_key = secret_key
 
         self.host = host
@@ -60,19 +60,19 @@ class Client:
                 self.url,
             )
             print(
-                "No port was provided - initiating multicast connection at %s.",
+                "No port was provided - initiating multicast connection at",
                 self.url,
             )
             self.multicast = await self.session.ws_connect(self.url, autoping=False)
 
             payload = {"connect": True, "headers": {"Authorization": self.secret_key}}
             log.debug("Multicast Server < %r", payload)
-            print("Multicast Server < %r", payload)
+            print("Multicast Server < ", payload)
             await self.multicast.send_json(payload)
             recv = await self.multicast.receive()
 
             log.debug("Multicast Server > %r", recv)
-            print("Multicast Server > %r", recv)
+            print("Multicast Server > ", recv)
             if recv.type in (aiohttp.WSMsgType.CLOSE, aiohttp.WSMsgType.CLOSED):
                 log.error(
                     "WebSocket connection unexpectedly closed. Multicast Server is unreachable."

@@ -149,7 +149,7 @@ class Server:
             headers = request.get("headers")
 
             if not headers or headers.get("Authorization") != self.secret_key:
-                log.info("Received unauthorized request (Invalid or no token provided)."
+                log.info("Received unauthorized request (Invalid or no token provided).")
                 print("Received unauthorized request (Invalid or no token provided).")
                 response = {"error": "Invalid or no token provided.", "code": 403}
             else:

@@ -25,7 +25,6 @@ class Client:
     def __init__(self, host="localhost", port=None, multicast_port=20000, secret_key=None):
         """Constructor"""
         self.loop = asyncio.get_event_loop()
-        print(f"[IPC]: {host} @ port {port} with key {secret_key}")
         self.secret_key = secret_key
 
         self.host = host
@@ -51,8 +50,6 @@ class Client:
             The websocket connection to the server
         """
         log.info("Initiating WebSocket connection.")
-        print("Initiating WebSocket connection.")
-        print(f"[IPC]: {self.host} @ port {self.port} with key {self.secret_key} and url {self.url}")
         self.session = aiohttp.ClientSession()
 
         if not self.port:
@@ -60,20 +57,14 @@ class Client:
                 "No port was provided - initiating multicast connection at %s.",
                 self.url,
             )
-            print(
-                "No port was provided - initiating multicast connection at",
-                self.url,
-            )
             self.multicast = await self.session.ws_connect(self.url, autoping=False)
 
             payload = {"connect": True, "headers": {"Authorization": self.secret_key}}
             log.debug("Multicast Server < %r", payload)
-            print("Multicast Server < ", payload)
             await self.multicast.send_json(payload)
             recv = await self.multicast.receive()
 
             log.debug("Multicast Server > %r", recv)
-            print("Multicast Server > ", recv)
             if recv.type in (aiohttp.WSMsgType.CLOSE, aiohttp.WSMsgType.CLOSED):
                 log.error(
                     "WebSocket connection unexpectedly closed. Multicast Server is unreachable."
@@ -84,7 +75,6 @@ class Client:
             self.port = port_data["port"]
 
         self.websocket = await self.session.ws_connect(self.url, autoping=False, autoclose=False)
-        print(f"WS Initiated: {self.websocket} at {self.url}")
         log.info("Client connected to %s", self.url)
 
         return self.websocket
@@ -101,10 +91,8 @@ class Client:
         """
         log.info("Requesting IPC Server for %r with %r", endpoint, kwargs)
         if not self.session:
-            print("Session not inited.")
             await self.init_sock()
         if not self.websocket:
-            print("WS not inited.")
             await self.init_sock()
 
         payload = {
@@ -112,8 +100,6 @@ class Client:
             "data": kwargs,
             "headers": {"Authorization": self.secret_key},
         }
-        print(f"Request Payload: {payload}")
-        print(f"Websocket: {self.websocket} @ {self.url}")
         await self.websocket.send_json(payload)
 
         log.debug("Client > %r", payload)

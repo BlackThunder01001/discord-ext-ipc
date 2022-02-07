@@ -134,7 +134,6 @@ class Server:
         self.update_endpoints()
 
         log.info("Initiating IPC Server.")
-        print("Initiating IPC Server.")
 
         websocket = aiohttp.web.WebSocketResponse()
         await websocket.prepare(request)
@@ -143,7 +142,6 @@ class Server:
             request = message.json()
 
             log.debug("IPC Server < %r", request)
-            print("IPC Server <", request)
             endpoint = request.get("endpoint")
 
             headers = request.get("headers")
@@ -198,7 +196,6 @@ class Server:
             try:
                 await websocket.send_json(response)
                 log.debug("IPC Server > %r", response)
-                print("IPC Server > ", response)
             except TypeError as error:
                 if str(error).startswith("Object of type") and str(error).endswith(
                     "is not JSON serializable"

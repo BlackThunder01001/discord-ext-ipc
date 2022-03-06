@@ -10,22 +10,21 @@ class Slient(Client, Server):
         self,
         bot,
         host="localhost",
-        sending_port = 8654,
-        receiving_port = 8653,
+        base_port = 8654,
         secret_key = None,
-        sending_multicast = 20000,
-        receiving_multicast = 20001,
+        base_multicast = 20000,
+        instance = 0
     ):
         self.client = Client(
-            port = receiving_port,
-            multicast_port = receiving_multicast,
+            port = base_port + instance,
+            multicast_port = base_multicast +1-instance,
             host = host,
             secret_key = secret_key)
 
         self.server = Server(
             bot = bot,
-            port = sending_port,
-            multicast_port = sending_multicast,
+            port = base_port+1-instance,
+            multicast_port = base_multicast + instance,
             host = host,
             secret_key = secret_key
         )

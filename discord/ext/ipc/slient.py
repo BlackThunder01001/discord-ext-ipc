@@ -2,6 +2,10 @@ from .client import Client
 from .server import Server
 
 class Slient(Client, Server):
+    """
+    Merges the methods of class:`.Client` & class:`.Server` to allow intercommunication
+    between two discord bots. 
+    """
     def __init__(
         self,
         bot,
@@ -25,7 +29,7 @@ class Slient(Client, Server):
             host = host,
             secret_key = secret_key
         )
-        for com in [self.server, self.client]:
+        for com in (self.server, self.client):
             for method in dir(com):
                 if method.startswith('__') is False:
                     try:

@@ -12,18 +12,23 @@ class Slient(Client, Server):
         sending_multicast = 20000,
         receiving_multicast = 20001,
     ):
-        Client.__init__(
-            self,
+        self.client = Client(
             port = receiving_port,
             multicast_port = receiving_multicast,
             host = host,
             secret_key = secret_key)
 
-        Server.__init__(
-            self,
+        self.server = Server(
             bot = bot,
             port = sending_port,
             multicast_port = sending_multicast,
             host = host,
             secret_key = secret_key
         )
+        for com in [self.server, self.client]:
+            for method in dir(com):
+                if method.startswith('__') is False:
+                    try:
+                        setattr(self, method, getattr(com, method))
+                    except:
+                        ...

@@ -94,6 +94,8 @@ class Client:
             await self.init_sock()
         if not self.websocket:
             await self.init_sock()
+        if self.websocket.closed:
+            await self.init_sock()
 
         payload = {
             "endpoint": endpoint,
